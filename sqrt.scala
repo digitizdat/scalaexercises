@@ -1,13 +1,15 @@
+package org.mcgreal.sqrt
 
 import org.backuity.clist._
+// or if you do not like wildcard imports:
+// import org.backuity.clist.{Command, opt, args}
 
-object Sqrt extends CliMain[Unit](
-    name = "sqrt",
-    description = "return the square root of the given number") {
-  
-    var target = arg[Double](description = "files to concat")
+object Sqrt {
+    class SqrtCli extends Command(description = "return the square root of the given number") {
+        var number = arg[Double](description = "files to concat")
+    }
 
-    def sqrt() = {
+    def getsqrt(number: Double) = {
         var threshold = 0.001
         
         def abs(x: Double) = if (x > 0) x else -x
@@ -17,16 +19,19 @@ object Sqrt extends CliMain[Unit](
         def guess(x: Double) = 1.0
         
         def isGoodEnough(cur: Double) =
-            abs(cur-target) <= threshold
+            abs(cur-number) <= threshold
         
         def sqrtIter(guess: Double): Double =
             if (isGoodEnough(guess*guess)) guess
-            else sqrtIter(mean(guess, target/guess))
+            else sqrtIter(mean(guess, number/guess))
         
-        sqrtIter(guess(target))
+        sqrtIter(guess(number))
     } 
 
-    def run: Unit = {
-        println("target = " + target)
+    def main(argv: Array[String]) {
+        Cli.parse(argv).withCommand(new SqrtCli) { case pargs =>
+            println(getsqrt(pargs.number))
+        }
+        println(getsqrt(pargs.number))
     }
 }
