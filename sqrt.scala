@@ -1,18 +1,11 @@
-package org.mcgreal.sqrt
 
-import org.backuity.clist._
-// or if you do not like wildcard imports:
-// import org.backuity.clist.{Command, opt, args}
+import scala.util.Try
 
 object Sqrt {
-    class SqrtCli extends Command(description = "return the square root of the given number") {
-        var number = arg[Double](description = "files to concat")
-    }
-
-    def getsqrt(number: Double) = {
-        var threshold = 0.001
+    def abs(x: Double) = if (x > 0) x else -x
         
-        def abs(x: Double) = if (x > 0) x else -x
+    def getsqrt(number: Double) = {
+        val threshold = 0.0001
         
         def mean(x: Double, y: Double) = (x+y)/2
         
@@ -28,10 +21,14 @@ object Sqrt {
         sqrtIter(guess(number))
     } 
 
+    def output(result: Double, complex: Boolean) =
+        if (complex == true) println(result + "i")
+        else println(result)
+
     def main(argv: Array[String]) {
-        Cli.parse(argv).withCommand(new SqrtCli) { case pargs =>
-            println(getsqrt(pargs.number))
-        }
-        println(getsqrt(pargs.number))
+        val number = Try(argv(0).toDouble).getOrElse(0.0)
+
+        if (number == 0.0) output(number, (number < 0))
+        else output(getsqrt(abs(number)), (number < 0))
     }
 }
