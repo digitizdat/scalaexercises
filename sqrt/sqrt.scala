@@ -1,5 +1,6 @@
 
 import scala.util.Try
+import scala.annotation.tailrec
 
 object Sqrt {
     def abs(x: Double) = if (x > 0) x else -x
@@ -14,6 +15,7 @@ object Sqrt {
         def isGoodEnough(cur: Double) =
             abs(cur-number) <= threshold
         
+        @tailrec
         def sqrtIter(guess: Double): Double =
             if (isGoodEnough(guess*guess)) guess
             else sqrtIter(mean(guess, number/guess))
